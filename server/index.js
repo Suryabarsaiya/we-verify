@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 3001;
 initSupabase();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: true,          // Allow any origin (Vercel, custom domains, localhost)
+    credentials: true
+}));
 app.use(express.json({ limit: '1mb' }));
 
 // Routes
@@ -27,7 +30,7 @@ app.use((err, req, res, next) => {
 });
 
 if (require.main === module) {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`\n✔  We Verify — Startup Validation Engine on port ${PORT}`);
         console.log(`   OpenRouter LLM: ${process.env.OPENROUTER_API_KEY ? '✅ configured' : '❌ missing'}`);
         console.log(`   Tavily Search:  ${process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing'}`);
