@@ -6,8 +6,8 @@
 node_modules/
 client/node_modules/
 
-# Environment variables
-# .env is committed intentionally for this project
+# Environment variables (NEVER commit secrets)
+.env
 .env.local
 .env.*.local
 
