@@ -48,6 +48,9 @@ export default function App() {
                     try {
                         const event = JSON.parse(line);
 
+                        // Skip keep-alive pings
+                        if (event.type === 'ping') continue;
+
                         // Handle server-level streaming error string
                         if (event.type === 'error') throw new Error(event.error);
 
