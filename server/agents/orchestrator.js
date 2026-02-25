@@ -69,28 +69,43 @@ async function validateIdea({ title, summary, targetMarket, businessModel }, onE
 
     console.log(`\n✅ VALIDATION COMPLETE — Verdict: ${report.verdict} | ${pipe.sources.length} sources | ${Date.now() - pipe.startTime}ms\n`);
 
+    // ── Normalize scores (LLM sometimes returns numbers or nested objects) ──
+    function normalizeScore(val) {
+        if (typeof val === 'number') return { score: val, rationale: '' };
+        if (val && typeof val === 'object' && 'score' in val) return { score: Number(val.score), rationale: val.rationale || '' };
+        return { score: 0, rationale: 'Unable to assess' };
+    }
+
+    const rawScores = report.scores || {};
+    const normalizedScores = {
+        marketViability: normalizeScore(rawScores.marketViability || rawScores.market_viability || rawScores.market),
+        customerClarity: normalizeScore(rawScores.customerClarity || rawScores.customer_clarity || rawScores.customer),
+        competitionIntensity: normalizeScore(rawScores.competitionIntensity || rawScores.competition_intensity || rawScores.competition),
+        risk: normalizeScore(rawScores.risk)
+    };
+
     const finalResult = {
         idea: { title, summary, targetMarket, businessModel },
         keywords,
-        verdict: report.verdict,
-        verdictExplanation: report.verdictExplanation,
-        executiveSummary: report.executiveSummary,
-        scores: report.scores,
-        topEvidence: report.topEvidence,
-        topCompetitors: report.topCompetitors,
-        nextSteps: report.nextSteps,
+        verdict: report.verdict || 'REWORK',
+        verdictExplanation: report.verdictExplanation || report.verdict_explanation || '',
+        executiveSummary: report.executiveSummary || report.executive_summary || report.summary || report.verdictExplanation || 'Analysis complete.',
+        scores: normalizedScores,
+        topEvidence: report.topEvidence || report.top_evidence || report.evidence || [],
+        topCompetitors: report.topCompetitors || report.top_competitors || [],
+        nextSteps: report.nextSteps || report.next_steps || [],
         marketData: {
-            demandScore: marketData.demandScore,
-            trendDirection: marketData.trendDirection,
-            estimatedTAM: marketData.estimatedTAM,
-            demandSignals: marketData.demandSignals,
-            risks: marketData.risks
+            demandScore: marketData.demandScore || marketData.demand_score || 0,
+            trendDirection: marketData.trendDirection || marketData.trend_direction || 'stable',
+            estimatedTAM: marketData.estimatedTAM || marketData.estimated_tam || '',
+            demandSignals: marketData.demandSignals || marketData.demand_signals || [],
+            risks: marketData.risks || []
         },
         competitorData: {
-            competitionLevel: competitorData.competitionLevel,
-            competitors: competitorData.competitors,
-            marketGaps: competitorData.marketGaps,
-            differentiationOpportunities: competitorData.differentiationOpportunities
+            competitionLevel: competitorData.competitionLevel || competitorData.competition_level || 'moderate',
+            competitors: competitorData.competitors || [],
+            marketGaps: competitorData.marketGaps || competitorData.market_gaps || [],
+            differentiationOpportunities: competitorData.differentiationOpportunities || competitorData.differentiation_opportunities || []
         },
         sourcesCount: pipe.sources.length,
         ...pipe.getResult()
