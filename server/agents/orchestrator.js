@@ -53,19 +53,55 @@ async function validateIdea({ title, summary, targetMarket, businessModel }, onE
     pipe.log('Orchestrator', 'KEYWORDS', `Extracted: [${keywords.join(', ')}]`);
     pipe.setState('Orchestrator', { status: 'dispatching-agents', keywords });
 
-    // ── Step 2: Run Market + Competitor agents in PARALLEL ──
+    // ── Step 2: Run Market + Competitor agents in PARALLEL (crash-proof) ──
     pipe.log('Orchestrator', 'DISPATCHING', 'Spawning Market Agent + Competitor Agent in parallel');
 
-    const [marketData, competitorData] = await Promise.all([
+    const fallbackMarket = { demandScore: 50, trendDirection: 'stable', estimatedTAM: 'Unable to assess', demandSignals: [], risks: ['Analysis failed — retry later'], evidence: [] };
+    const fallbackCompetitor = { competitionLevel: 'moderate', competitors: [], marketGaps: [], differentiationOpportunities: [], evidence: [] };
+
+    let marketData, competitorData;
+
+    const [marketResult, competitorResult] = await Promise.allSettled([
         marketAgent.run(idea, keywords, pipe),
         competitorAgent.run(idea, keywords, pipe)
     ]);
 
-    pipe.log('Orchestrator', 'AGENTS_DONE', `Market (${marketData.demandScore}/100) + Competitors (${competitorData.competitors?.length || 0} rivals)`);
+    if (marketResult.status === 'fulfilled') {
+        marketData = marketResult.value;
+    } else {
+        console.error('MarketAgent CRASHED:', marketResult.reason?.message || marketResult.reason);
+        pipe.log('MarketAgent', 'ERROR', `Agent failed: ${marketResult.reason?.message || 'Unknown error'}`);
+        marketData = fallbackMarket;
+    }
 
-    // ── Step 3: Synthesize final report ──
+    if (competitorResult.status === 'fulfilled') {
+        competitorData = competitorResult.value;
+    } else {
+        console.error('CompetitorAgent CRASHED:', competitorResult.reason?.message || competitorResult.reason);
+        pipe.log('CompetitorAgent', 'ERROR', `Agent failed: ${competitorResult.reason?.message || 'Unknown error'}`);
+        competitorData = fallbackCompetitor;
+    }
+
+    pipe.log('Orchestrator', 'AGENTS_DONE', `Market (${marketData.demandScore || '?'}/100) + Competitors (${competitorData.competitors?.length || 0} rivals)`);
+
+    // ── Step 3: Synthesize final report (with fallback) ──
     pipe.log('Orchestrator', 'SYNTHESIZING', 'Feeding data to Synthesizer Agent');
-    const report = await synthesizerAgent.run(idea, marketData, competitorData, pipe);
+    let report;
+    try {
+        report = await synthesizerAgent.run(idea, marketData, competitorData, pipe);
+    } catch (synthErr) {
+        console.error('Synthesizer CRASHED:', synthErr.message);
+        pipe.log('Synthesizer', 'ERROR', `Synthesizer failed: ${synthErr.message}`);
+        report = {
+            verdict: 'REWORK',
+            verdictExplanation: 'Analysis partially completed due to an error.',
+            executiveSummary: 'The validation engine encountered an issue during synthesis. Partial data from Market and Competitor agents was collected successfully.',
+            scores: { marketViability: { score: marketData.demandScore || 50, rationale: 'From market agent' }, customerClarity: { score: 50, rationale: 'Unable to assess' }, competitionIntensity: { score: 50, rationale: 'Unable to assess' }, risk: { score: 50, rationale: 'Unable to assess' } },
+            topEvidence: ['Partial analysis — some agents encountered errors'],
+            topCompetitors: competitorData.competitors?.slice(0, 3) || [],
+            nextSteps: [{ action: 'Retry the validation', why: 'A temporary error occurred', timeframe: 'Now' }]
+        };
+    }
 
     console.log(`\n✅ VALIDATION COMPLETE — Verdict: ${report.verdict} | ${pipe.sources.length} sources | ${Date.now() - pipe.startTime}ms\n`);
 
