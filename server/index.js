@@ -23,6 +23,16 @@ app.use('/api', apiRoutes());
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', agents: 3, engine: 'We Verify' }));
 
+// Root route (so Render doesn't show "Cannot GET /")
+app.get('/', (req, res) => res.json({
+    name: 'We Verify API',
+    status: 'running',
+    endpoints: {
+        health: '/health',
+        validate: 'POST /api/validate'
+    }
+}));
+
 // Error handler
 app.use((err, req, res, next) => {
     console.error('Server error:', err.message);
