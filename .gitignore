@@ -1,0 +1,41 @@
+# ═══════════════════════════════════════
+# We Verify — .gitignore
+# ═══════════════════════════════════════
+
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Environment variables (NEVER commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+client/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test coverage
+coverage/
+
+# Misc
+.cache/
+*.tgz
