@@ -76,6 +76,33 @@ module.exports = function () {
         }
     });
 
+    // ═══════ Accelerate & Legal Analysis (India-Specific) ═══════
+    router.post('/analyze-idea', async (req, res) => {
+        try {
+            const { idea } = req.body;
+            if (!idea || !idea.trim()) {
+                return res.status(400).json({ error: 'Startup idea string is required' });
+            }
+
+            // Sanitize inputs
+            function sanitize(str, maxLen = 800) {
+                if (!str || typeof str !== 'string') return '';
+                return str.replace(/[<>{}\\]/g, '').substring(0, maxLen).trim();
+            }
+
+            const cleanIdea = sanitize(idea, 800);
+
+            // Import the isolated Accelerator Agent (doesn't touch Core Agent)
+            const { runAccelerationPipeline } = require('../agents/indiaAcceleratorAgent');
+            const result = await runAccelerationPipeline(cleanIdea);
+
+            res.json({ success: true, data: result });
+        } catch (err) {
+            console.error('Accelerator pipeline error:', err);
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     // ═══════ Save email lead (for PDF gating) ═══════
     router.post('/leads', async (req, res) => {
         try {

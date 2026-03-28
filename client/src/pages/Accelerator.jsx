@@ -1,16 +1,71 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rocket, Landmark, Users, LayoutDashboard, Target } from 'lucide-react';
+import AcceleratorDashboard from '../components/AcceleratorDashboard';
 
 export default function Accelerator() {
+    const [idea, setIdea] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [resultData, setResultData] = useState(null);
+
+    const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+
+    const handleAnalyze = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setResultData(null);
+        try {
+            const res = await fetch(`${API_BASE}/api/analyze-idea`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idea })
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.error || 'Analysis failed');
+            setResultData(json.data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="page-container glass-card">
             <div className="page-header accelerator-header" style={{ marginBottom: '4rem' }}>
                 <div className="demo-badge A-grade" style={{ background: 'var(--neon-purple)', color: 'white', padding: '0.25rem 1rem', borderRadius: '20px', display: 'inline-block', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '1rem' }}>EXCLUSIVE PROGRAM</div>
                 <h1 className="hero-headline">The We Verify Accelerator.</h1>
-                <p className="hero-subtext">For founders who passed the AI validation gauntlet and are ready for high-velocity institutional support.</p>
+                <p className="hero-subtext" style={{ maxWidth: '800px', margin: '0 auto' }}>For founders ready for institutional support. Evaluate your Indian legal compliance, regulatory risks, and instantly match with DPIIT schemes and active startup incubators.</p>
             </div>
 
-            <div className="vertical-stepper" style={{ maxWidth: '900px' }}>
+            {/* Input Terminal */}
+            <div style={{ maxWidth: '800px', margin: '0 auto 4rem', textAlign: 'left' }}>
+                <form onSubmit={handleAnalyze} className="modern-card glass-card" style={{ padding: '2rem' }}>
+                    <label style={{ display: 'block', fontSize: '1.2rem', marginBottom: '1rem', fontWeight: 'bold' }}>Describe your startup architecture and sector:</label>
+                    <textarea 
+                        value={idea}
+                        onChange={(e) => setIdea(e.target.value)}
+                        placeholder="e.g. A peer-to-peer crypto lending platform targeting college students in Bangalore..."
+                        rows={4}
+                        style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', marginBottom: '1.5rem', fontFamily: 'inherit', fontSize: '1rem' }}
+                        disabled={loading}
+                        required
+                    />
+                    <button type="submit" className="btn-validate" disabled={loading} style={{ width: '100%', fontSize: '1.2rem' }}>
+                        {loading ? 'Analyzing Legal & Funding Paths... ⏳' : '⚡ Analyze Legal Viability & Grants'}
+                    </button>
+                    {error && <div style={{ color: '#ef4444', marginTop: '1rem', padding: '1rem', background: 'rgba(239,68,68,0.1)', borderRadius: '8px' }}>⚠️ {error}</div>}
+                </form>
+            </div>
+
+            {/* Render Dashboard if result exists */}
+            {resultData && <AcceleratorDashboard data={resultData} />}
+
+            {/* Hide stepper when Dashboard is active */}
+            {!resultData && (
+                <div className="vertical-stepper" style={{ maxWidth: '900px' }}>
                 
                 <div className="step-card modern-card" style={{ borderLeft: '4px solid #3b82f6' }}>
                     <div className="step-content" style={{ width: '100%' }}>
@@ -53,15 +108,14 @@ export default function Accelerator() {
                 </div>
 
             </div>
+            )}
 
-            <div className="bottom-cta" style={{ textAlign: 'center', marginTop: '6rem', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Are you ready to accelerate?</h2>
-                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Only startups with a VALIDATE or A-Grade verdict qualify to apply.</p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-                    <Link to="/" className="btn-validate" style={{ textDecoration: 'none' }}>Verify Idea First</Link>
-                    <Link to="/contact" className="btn-secondary" style={{ padding: '1rem 2rem', textDecoration: 'none' }}>Apply for Accelerator</Link>
+            {!resultData && (
+                <div className="bottom-cta" style={{ textAlign: 'center', marginTop: '6rem', marginBottom: '2rem' }}>
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Are you ready to accelerate?</h2>
+                    <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>We verify your Indian legal viability and connect you with capital instantly.</p>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
