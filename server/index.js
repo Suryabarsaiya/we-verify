@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const apiRoutes = require('./routes/api');
 const { initSupabase } = require('./services/supabase');
 
 const app = express();
@@ -20,7 +19,7 @@ app.use(express.json({ limit: '1mb' }));
 // ═══════ Rate Limiter (5 requests per minute per IP) ═══════
 const rateLimit = new Map();
 const rateLimitTimer = setInterval(() => { rateLimit.clear(); }, 300000); // Clean up every 5 min
-if (rateLimitTimer.unref) rateLimitTimer.unref(); // Prevent Jest open handle 
+if (rateLimitTimer.unref) rateLimitTimer.unref(); // Prevent Jest open handle
 app.use('/api/validate', (req, res, next) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
     const now = Date.now();
@@ -38,20 +37,29 @@ app.use('/api/validate', (req, res, next) => {
 const apiRoutes = require('./routes/api');
 const billingRoutes = require('./routes/billing');
 
-// Routes
 app.use('/api', apiRoutes());
 app.use('/api/billing', billingRoutes());
 
 // Health check
-app.get('/health', (req, res) => res.json({ status: 'ok', agents: 3, engine: 'We Verify' }));
+app.get('/health', (req, res) => res.json({
+    status: 'ok',
+    agents: 4,
+    engine: 'We Verify v2.0',
+    gemini: process.env.GEMINI_API_KEY ? '✅ configured' : '❌ missing',
+    tavily: process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing',
+}));
 
 // Root route (so Render doesn't show "Cannot GET /")
 app.get('/', (req, res) => res.json({
     name: 'We Verify API',
+    version: '2.0.0',
     status: 'running',
     endpoints: {
-        health: '/health',
-        validate: 'POST /api/validate'
+        health: 'GET /health',
+        validate: 'POST /api/validate',
+        analyzeIdea: 'POST /api/analyze-idea',
+        saveLead: 'POST /api/leads',
+        dbCheck: 'GET /api/db-check'
     }
 }));
 
@@ -63,10 +71,11 @@ app.use((err, req, res, next) => {
 
 if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
-        console.log(`\n✔  We Verify — Startup Validation Engine on port ${PORT}`);
-        console.log(`   NVIDIA Llama Model: ${process.env.NVIDIA_API_KEY ? '✅ configured' : '❌ missing'}`);
-        console.log(`   Tavily Search:      ${process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing'}`);
-        console.log(`   Agents: Market · Competitor · Synthesizer\n`);
+        console.log(`\n✔  We Verify — Startup Validation Engine v2.0 on port ${PORT}`);
+        console.log(`   Gemini API Key: ${process.env.GEMINI_API_KEY ? '✅ configured' : '❌ missing'}`);
+        console.log(`   Tavily Search:  ${process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing'}`);
+        console.log(`   Supabase:       ${process.env.SUPABASE_URL ? '✅ configured' : '❌ missing'}`);
+        console.log(`   Agents: Planner → Executor → Verifier → Critic\n`);
     });
 }
 

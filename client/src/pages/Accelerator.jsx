@@ -35,9 +35,8 @@ export default function Accelerator() {
     return (
         <div className="page-container glass-card">
             <div className="page-header accelerator-header" style={{ marginBottom: '4rem' }}>
-                <div className="demo-badge A-grade" style={{ background: 'var(--neon-purple)', color: 'white', padding: '0.25rem 1rem', borderRadius: '20px', display: 'inline-block', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '1rem' }}>EXCLUSIVE PROGRAM</div>
-                <h1 className="hero-headline">The We Verify Accelerator.</h1>
-                <p className="hero-subtext" style={{ maxWidth: '800px', margin: '0 auto' }}>For founders ready for institutional support. Evaluate your Indian legal compliance, regulatory risks, and instantly match with DPIIT schemes and active startup incubators.</p>
+                <h1 className="hero-headline">Accelerator Sandbox</h1>
+                <p className="hero-subtext" style={{ maxWidth: '800px', margin: '0 auto' }}>Quickly evaluate your legal compliance, regulatory risks, and match with relevant funding schemes.</p>
             </div>
 
             {/* Input Terminal */}

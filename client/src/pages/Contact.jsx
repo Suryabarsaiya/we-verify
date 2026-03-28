@@ -3,10 +3,10 @@ import { Mail, Github, Twitter, Linkedin, MessageSquare, Instagram, Youtube } fr
 export default function Contact() {
     return (
         <div className="page-container glass-card">
-            <div className="page-header contact-header">
-                <h1 className="hero-headline">We’re here for the builders.</h1>
+            <div className="page-header contact-header" style={{ marginBottom: '3rem', textAlign: 'center' }}>
+                <h1 className="hero-headline">Contact Us. Your Startup Buddy.</h1>
                 <p className="hero-subtext" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                    Questions about your validation report? Looking for enterprise access or API integrations? Talk to us.
+                    We help you in your growth. Whether you need to refine, check, or analyze your ideas—we are here to scale your vision.
                 </p>
             </div>
 

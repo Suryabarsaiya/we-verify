@@ -6,7 +6,7 @@ export default function Pricing() {
         <div className="page-container glass-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
             <div className="page-header" style={{ marginBottom: '4rem' }}>
                 <h1 className="hero-headline">Simple Pricing. Infinite Value.</h1>
-                <p className="hero-subtext" style={{ maxWidth: '600px', margin: '0 auto' }}>Stop wasting $50,000 building the wrong startup. Validate your market before you write a single line of code.</p>
+                <p className="hero-subtext" style={{ maxWidth: '600px', margin: '0 auto' }}>Stop wasting time building the wrong startup. Validate your market before you write a single line of code.</p>
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', textAlign: 'left' }}>
