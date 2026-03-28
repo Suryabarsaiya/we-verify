@@ -12,10 +12,10 @@ export default function IdeaForm({ onSubmit, loading }) {
     };
 
     return (
-        <div className="idea-form glass-card neon-border">
-            <div className="form-header">
+        <div className="idea-form modern-card glass-card">
+            <div className="form-header modern-header">
                 <h2>Validate Your Startup Idea</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+                <p>
                     Describe your idea. Our AI agents will research the market, find competitors, and return a scored report.
                 </p>
             </div>

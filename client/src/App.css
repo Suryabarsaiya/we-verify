@@ -5,32 +5,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-void: #030712;
-    --bg-surface: #0f172a;
-    --glass-bg: rgba(15, 23, 42, 0.6);
-    --glass-border: rgba(56, 189, 248, 0.15);
-    --glass-border-hover: rgba(56, 189, 248, 0.4);
+    /* ════ MODERN APPLE/STRIPE MONOCHROME THEME ════ */
+    --bg-void: #fafafa;
+    --bg-surface: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-border-hover: rgba(0, 0, 0, 0.12);
 
-    --neon-cyan: #22d3ee;
-    --neon-purple: #c084fc;
-    --neon-emerald: #10b981;
-    --neon-rose: #fb7185;
+    --neon-cyan: #0066cc; /* Apple Blue */
+    --neon-purple: #6366f1; /* Stripe Indigo */
+    --neon-emerald: #10b981; 
+    --neon-rose: #ef4444;
     --neon-amber: #f59e0b;
 
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #475569;
+    --text-primary: #111827; /* Near Black */
+    --text-secondary: #4b5563; /* Slate 600 */
+    --text-muted: #9ca3af;
 
-    --gradient-brand: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.15), transparent 50%);
+    --gradient-brand: linear-gradient(135deg, #111827 0%, #374151 100%);
+    --gradient-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08), transparent 70%);
 
     --radius-xl: 24px;
     --radius-lg: 16px;
     --radius-md: 12px;
     --radius-sm: 8px;
 
-    --font-heading: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -713,6 +714,239 @@ h5 {
     .form-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* ════ MODERN LUXURY OVERRIDES ════ */
+/* Light Apple/Stripe feel, overriding the dark glass where required */
+.modern-theme {
+    background-color: var(--bg-void);
+    color: var(--text-primary);
+}
+
+.modern-logo .logo-icon {
+    text-shadow: none;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.modern-logo h1 {
+    color: var(--text-primary);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+}
+
+.app-header .tagline {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-top: 1rem;
+    font-size: 1.25rem;
+}
+
+.modern-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.modern-header h2 {
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.modern-header p {
+    color: var(--text-secondary) !important;
+}
+
+.idea-form label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.idea-form input, .idea-form textarea, .idea-form select {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: var(--text-primary);
+}
+
+.idea-form input:focus, .idea-form textarea:focus, .idea-form select:focus {
+    background: #ffffff;
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.btn-validate {
+    background: var(--gradient-brand);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(17, 24, 39, 0.25);
+}
+
+.btn-validate:hover {
+    box-shadow: 0 6px 20px rgba(17, 24, 39, 0.35);
+}
+
+/* ════ MODERN INTERACTIVE STEPPER ════ */
+.modern-stepper {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    padding: 2.5rem;
+}
+
+.stepper-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
+
+.stepper-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.step-item {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+    padding-bottom: 2.5rem;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.step-item:last-child {
+    padding-bottom: 0;
+}
+
+.step-item.active {
+    opacity: 1;
+}
+
+.step-item.past {
+    opacity: 0.8;
+}
+
+.step-indicator {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon-loading {
+    color: var(--neon-purple);
+}
+
+.icon-success {
+    color: var(--neon-emerald);
+}
+
+.icon-pending {
+    color: #d1d5db;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.step-line {
+    position: absolute;
+    top: 32px;
+    bottom: -8px;
+    width: 2px;
+    background: #e5e7eb;
+    border-radius: 2px;
+}
+
+.step-line.filled {
+    background: var(--neon-emerald);
+}
+
+.step-content {
+    flex: 1;
+    padding-top: 2px;
+}
+
+.step-content h4 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.step-content p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.active-progress-bar {
+    height: 6px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.shimmer-bar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 30%;
+    background: var(--neon-purple);
+    border-radius: 10px;
+    animation: shimmer 1.5s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+    0% { left: -30%; width: 30%; }
+    50% { width: 50%; }
+    100% { left: 100%; width: 30%; }
+}
+
+/* ════ EXPERT UI/UX FOOTER (Light Mod) ════ */
+.modern-footer {
+    background: var(--bg-surface);
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.02);
+}
+
+.modern-social {
+    background: #f3f4f6;
+    color: var(--text-secondary);
+}
+
+.modern-social:hover {
+    background: white;
+    color: var(--neon-purple);
+    border-color: #e5e7eb;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.modern-email {
+    background: #f3f4f6;
+    color: var(--text-primary);
+}
+
+.modern-email:hover {
+    background: white;
+    color: var(--neon-cyan);
+    border-color: #e5e7eb;
 }
 
 /* ════ EXPERT UI/UX FOOTER ════ */
