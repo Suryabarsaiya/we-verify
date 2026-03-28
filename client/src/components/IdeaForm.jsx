@@ -22,7 +22,7 @@ export default function IdeaForm({ onSubmit, loading }) {
 
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '1.5rem' }}>
-                    <label>Idea Title <span className="text-red-500">*</span></label>
+                    <label>Idea Title <span style={{ color: 'var(--neon-rose)' }}>*</span></label>
                     <input
                         type="text"
                         value={title}
@@ -34,7 +34,7 @@ export default function IdeaForm({ onSubmit, loading }) {
                 </div>
 
                 <div style={{ marginBottom: '1.5rem' }}>
-                    <label>Idea Summary <span className="text-red-500">*</span></label>
+                    <label>Idea Summary <span style={{ color: 'var(--neon-rose)' }}>*</span></label>
                     <textarea
                         value={summary}
                         onChange={(e) => setSummary(e.target.value)}

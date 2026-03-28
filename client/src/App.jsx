@@ -31,26 +31,35 @@ export default function App() {
                 throw new Error(errMsg);
             }
 
-            // Use text() as a universal fallback — works on all platforms/proxies
-            const fullText = await res.text();
-            const lines = fullText.split('\n').filter(l => l.trim());
-
+            // Stream NDJSON in real time using ReadableStream
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
             let finalData = null;
 
-            for (const line of lines) {
-                try {
-                    const event = JSON.parse(line);
-                    if (event.type === 'ping') continue;
-                    if (event.type === 'error') throw new Error(event.error);
-                    if (event.type === 'complete') {
-                        finalData = event.data;
-                        continue;
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop(); // Keep incomplete line in buffer
+
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    try {
+                        const event = JSON.parse(line);
+                        if (event.type === 'ping') continue;
+                        if (event.type === 'error') throw new Error(event.error);
+                        if (event.type === 'complete') {
+                            finalData = event.data;
+                            continue;
+                        }
+                        // Collect agent log events in real time
+                        setLiveEvents(prev => [...prev, event]);
+                    } catch (parseErr) {
+                        if (parseErr.message && !parseErr.message.includes('JSON')) throw parseErr;
                     }
-                    // Collect agent log events
-                    setLiveEvents(prev => [...prev, event]);
-                } catch (parseErr) {
-                    if (parseErr.message && !parseErr.message.includes('JSON')) throw parseErr;
-                    console.warn('Skipping unparseable line:', line);
                 }
             }
 

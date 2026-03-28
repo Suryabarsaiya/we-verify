@@ -8,10 +8,10 @@ export default function CompetitorCard({ competitor }) {
     return (
         <div style={{
             background: 'rgba(0,0,0,0.3)',
-            borderLeft: `3px solid ${threatColor}`,
             padding: '1rem 1.25rem',
             borderRadius: 'var(--radius-sm)',
-            border: '1px solid rgba(255,255,255,0.05)'
+            border: '1px solid rgba(255,255,255,0.05)',
+            borderLeft: `3px solid ${threatColor}`
         }}>
             <div className="comp-header">
                 <a href={competitor.url} target="_blank" rel="noopener noreferrer" className="comp-name" style={{ textDecoration: 'none' }}>

@@ -53,17 +53,27 @@ async function validateIdea({ title, summary, targetMarket, businessModel }, onE
     pipe.log('Orchestrator', 'KEYWORDS', `Extracted: [${keywords.join(', ')}]`);
     pipe.setState('Orchestrator', { status: 'dispatching-agents', keywords });
 
-    // ── Step 2: Run Market + Competitor agents in PARALLEL (crash-proof) ──
+    // ── Step 2: Run Market + Competitor agents in PARALLEL (crash-proof + timeout) ──
     pipe.log('Orchestrator', 'DISPATCHING', 'Spawning Market Agent + Competitor Agent in parallel');
 
     const fallbackMarket = { demandScore: 50, trendDirection: 'stable', estimatedTAM: 'Unable to assess', demandSignals: [], risks: ['Analysis failed — retry later'], evidence: [] };
     const fallbackCompetitor = { competitionLevel: 'moderate', competitors: [], marketGaps: [], differentiationOpportunities: [], evidence: [] };
 
+    // Timeout wrapper — prevents any single agent from hanging forever
+    function withTimeout(promise, ms, agentName) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error(`${agentName} timed out after ${ms / 1000}s`)), ms)
+            )
+        ]);
+    }
+
     let marketData, competitorData;
 
     const [marketResult, competitorResult] = await Promise.allSettled([
-        marketAgent.run(idea, keywords, pipe),
-        competitorAgent.run(idea, keywords, pipe)
+        withTimeout(marketAgent.run(idea, keywords, pipe), 45000, 'MarketAgent'),
+        withTimeout(competitorAgent.run(idea, keywords, pipe), 45000, 'CompetitorAgent')
     ]);
 
     if (marketResult.status === 'fulfilled') {

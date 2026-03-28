@@ -396,7 +396,7 @@ h5 {
 
 .cell-competitors {
     grid-column: span 6;
-    row-span: 2;
+    grid-row: span 2;
 }
 
 .cell-evidence {

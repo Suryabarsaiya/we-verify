@@ -26,12 +26,16 @@ async function saveValidationRecord(idea, report, trace) {
                 target_market: idea.targetMarket,
                 business_model: idea.businessModel,
                 verdict: report.verdict,
-                avg_score: report.scores ? Math.round(
-                    (report.scores.marketViability.score +
-                        report.scores.customerClarity.score +
-                        report.scores.competitionIntensity.score +
-                        report.scores.risk.score) / 4
-                ) : 0,
+                avg_score: (() => {
+                    try {
+                        const s = report.scores || {};
+                        const get = (v) => (typeof v === 'number' ? v : Number(v?.score) || 0);
+                        return Math.round((get(s.marketViability || s.market_viability) +
+                            get(s.customerClarity || s.customer_clarity) +
+                            get(s.competitionIntensity || s.competition_intensity) +
+                            get(s.risk)) / 4);
+                    } catch { return 0; }
+                })(),
                 full_report: report,
                 pipeline_trace: trace,
                 created_at: new Date().toISOString()

@@ -17,6 +17,22 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '1mb' }));
 
+// ═══════ Rate Limiter (5 requests per minute per IP) ═══════
+const rateLimit = new Map();
+setInterval(() => { rateLimit.clear(); }, 300000); // Clean up every 5 min
+app.use('/api/validate', (req, res, next) => {
+    const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+    const now = Date.now();
+    const window = rateLimit.get(ip) || [];
+    const recent = window.filter(t => now - t < 60000);
+    if (recent.length >= 5) {
+        return res.status(429).json({ error: 'Rate limit exceeded. Max 5 validations per minute.' });
+    }
+    recent.push(now);
+    rateLimit.set(ip, recent);
+    next();
+});
+
 // Routes
 app.use('/api', apiRoutes());
 

@@ -29,13 +29,19 @@ module.exports = function () {
                 return res.status(400).json({ error: 'Idea summary is required (1-3 sentences)' });
             }
 
+            // Sanitize inputs to prevent prompt injection
+            function sanitize(str, maxLen = 500) {
+                if (!str || typeof str !== 'string') return '';
+                return str.replace(/[<>{}\\]/g, '').substring(0, maxLen).trim();
+            }
+
             // Set headers for Chunked NDJSON streaming
             res.setHeader('Content-Type', 'application/x-ndjson');
             res.setHeader('Transfer-Encoding', 'chunked');
             res.setHeader('X-Accel-Buffering', 'no');    // Disable Render/nginx buffering
             res.setHeader('Cache-Control', 'no-cache');
 
-            const ideaTitle = title?.trim() || summary.substring(0, 60);
+            const ideaTitle = sanitize(title, 100) || sanitize(summary, 60);
 
             // The onEvent callback receives logs & state updates and flashes them immediately
             const onEvent = (event) => {
@@ -44,9 +50,9 @@ module.exports = function () {
 
             const result = await orchestrator.validateIdea({
                 title: ideaTitle,
-                summary: summary.trim(),
-                targetMarket: targetMarket?.trim() || '',
-                businessModel: businessModel?.trim() || ''
+                summary: sanitize(summary, 500),
+                targetMarket: sanitize(targetMarket, 200),
+                businessModel: sanitize(businessModel, 100)
             }, onEvent);
 
             clearInterval(keepAlive);

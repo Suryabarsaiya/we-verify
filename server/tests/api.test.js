@@ -61,17 +61,28 @@ describe('API Endpoints', () => {
                     summary: 'An AI-powered tool that helps students create professional resumes',
                     targetMarket: 'College students',
                     businessModel: 'Freemium'
+                })
+                .buffer(true)
+                .parse((res, callback) => {
+                    let data = '';
+                    res.on('data', chunk => data += chunk);
+                    res.on('end', () => callback(null, data));
                 });
             expect(res.statusCode).toBe(200);
-            expect(res.body).toHaveProperty('verdict', 'VALIDATE');
-            expect(res.body).toHaveProperty('scores');
-            expect(res.body.scores).toHaveProperty('marketViability');
-            expect(res.body.scores).toHaveProperty('customerClarity');
-            expect(res.body.scores).toHaveProperty('competitionIntensity');
-            expect(res.body.scores).toHaveProperty('risk');
-            expect(res.body).toHaveProperty('topCompetitors');
-            expect(res.body).toHaveProperty('nextSteps');
-            expect(res.body).toHaveProperty('executiveSummary');
+            // Parse the NDJSON response — find the 'complete' event
+            const lines = res.body.split('\n').filter(l => l.trim());
+            const events = lines.map(l => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+            const complete = events.find(e => e.type === 'complete');
+            expect(complete).toBeDefined();
+            expect(complete.data).toHaveProperty('verdict', 'VALIDATE');
+            expect(complete.data).toHaveProperty('scores');
+            expect(complete.data.scores).toHaveProperty('marketViability');
+            expect(complete.data.scores).toHaveProperty('customerClarity');
+            expect(complete.data.scores).toHaveProperty('competitionIntensity');
+            expect(complete.data.scores).toHaveProperty('risk');
+            expect(complete.data).toHaveProperty('topCompetitors');
+            expect(complete.data).toHaveProperty('nextSteps');
+            expect(complete.data).toHaveProperty('executiveSummary');
         });
     });
 });

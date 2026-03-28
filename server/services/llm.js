@@ -23,7 +23,7 @@ function getConfig() {
 // ═══════ Core LLM call with retry ═══════
 async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
   const { apiKey, model } = getConfig();
-  if (!apiKey) return JSON.stringify({ error: 'LLM_NOT_CONFIGURED', message: 'Set OPENROUTER_API_KEY in .env' });
+  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set OPENROUTER_API_KEY in .env');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -53,11 +53,11 @@ async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
         await new Promise(r => setTimeout(r, waitSec * 1000));
         continue;
       }
-      if (attempt === retries) return JSON.stringify({ error: 'LLM_FAILED', message: msg.substring(0, 200) });
+      if (attempt === retries) throw new Error(`LLM_FAILED: ${msg.substring(0, 200)}`);
       await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
     }
   }
-  return JSON.stringify({ error: 'LLM_EXHAUSTED', message: 'All retry attempts failed' });
+  throw new Error('LLM_EXHAUSTED: All retry attempts failed');
 }
 
 // ═══════ Parse JSON from LLM response — 4 fallback strategies ═══════
