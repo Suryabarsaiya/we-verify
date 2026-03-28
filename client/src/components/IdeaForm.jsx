@@ -66,24 +66,19 @@ export default function IdeaForm({ onSubmit, loading }) {
                             <option value="">Select...</option>
                             <optgroup label="Software & Digital">
                                 <option value="B2B SaaS">B2B SaaS</option>
-                                <option value="B2C SaaS / Subscription">B2C SaaS / Subscription</option>
-                                <option value="Marketplace (2-Sided)">Marketplace (2-Sided)</option>
-                                <option value="Freemium Tool">Freemium Tool</option>
-                                <option value="Mobile App (In-App Purchases)">Mobile App (IAP)</option>
-                                <option value="API / Data as a Service">API / Data as a Service</option>
+                                <option value="B2C SaaS">B2C SaaS / Subscription</option>
+                                <option value="Marketplace">Marketplace (2-Sided)</option>
+                                <option value="AI Tools & Infrastructure">AI Tools & Infrastructure</option>
+                                <option value="Mobile App (IAP)">Mobile App (IAP)</option>
                             </optgroup>
-                            <optgroup label="Commerce & Physical">
-                                <option value="D2C / Ecommerce">D2C / Ecommerce</option>
+                            <optgroup label="Commerce & Retail">
+                                <option value="D2C / Commerce">D2C / Checkout</option>
                                 <option value="Hardware / IoT">Hardware / IoT</option>
-                                <option value="Retail / Brick & Mortar">Retail / Brick & Mortar</option>
-                                <option value="Subscription Box">Subscription Box</option>
                             </optgroup>
-                            <optgroup label="Services & Other">
-                                <option value="Agency / Services">Agency / Services</option>
-                                <option value="Advertising / Media">Advertising / Media</option>
-                                <option value="DeepTech / R&D">DeepTech / R&D</option>
-                                <option value="Open Source">Open Source</option>
+                            <optgroup label="Modern Frontiers">
                                 <option value="Web3 / Crypto">Web3 / Crypto</option>
+                                <option value="Creator Economy">Creator Economy</option>
+                                <option value="Agencies / Services">Agencies / Services</option>
                                 <option value="Other / Unsure">Other / Unsure</option>
                             </optgroup>
                         </select>

@@ -6,12 +6,13 @@ export default function Footer() {
         <footer className="app-footer modern-footer">
             <div className="footer-content">
                 <div className="footer-brand">
-                    <div className="logo-small">
+                    <div className="logo-small" style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
                         <span className="logo-icon small">⚡</span>
                         <h2>We Verify</h2>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>by Shine Surya</span>
                     </div>
                     <p>Automated startup validation engine powered by parallel AI agents.</p>
-                    <p className="copyright">© {new Date().getFullYear()} @shinesurya. All rights reserved.</p>
+                    <p className="copyright" style={{ color: "white" }}>© {new Date().getFullYear()} Shine Surya. All rights reserved.</p>
                 </div>
 
                 <div className="footer-links">
@@ -19,6 +20,8 @@ export default function Footer() {
                     <nav className="footer-nav">
                         <Link to="/about">About Us</Link>
                         <Link to="/how-it-works">How It Works</Link>
+                        <Link to="/services">Services</Link>
+                        <Link to="/accelerator">Accelerator</Link>
                         <Link to="/pricing">Pricing</Link>
                         <Link to="/demo">Sample Reports</Link>
                     </nav>

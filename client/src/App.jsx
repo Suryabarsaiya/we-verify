@@ -9,6 +9,8 @@ import HowItWorks from './pages/HowItWorks';
 import Demo from './pages/Demo';
 import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
+import Services from './pages/Services';
+import Accelerator from './pages/Accelerator';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 
@@ -23,6 +25,8 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/accelerator" element={<Accelerator />} />
                 <Route path="/demo" element={<Demo />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/contact" element={<Contact />} />

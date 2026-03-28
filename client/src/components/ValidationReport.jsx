@@ -131,11 +131,19 @@ export default function ValidationReport({ report, onReset }) {
     return (
         <div ref={reportRef} className="report-bento">
             {/* Header / Verdict */}
-            <div className="bento-header" style={{ background: vs.bg, borderColor: vs.border, boxShadow: `0 0 40px ${vs.border}` }}>
-                <div className="verdict-icon" style={{ textShadow: `0 0 20px ${vs.color}` }}>{vs.icon}</div>
-                <div className="verdict-text">
-                    <h2 className="verdict-title">{report.verdict}</h2>
-                    <p className="verdict-tagline" style={{ color: vs.color }}>{vs.tagline}</p>
+            <div className="bento-header" style={{ background: vs.bg, borderColor: vs.border, boxShadow: `0 0 40px ${vs.border}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <div className="verdict-icon" style={{ textShadow: `0 0 20px ${vs.color}`, fontSize: '4rem' }}>{vs.icon}</div>
+                    <div className="verdict-text" style={{ textAlign: 'left' }}>
+                        <h2 className="verdict-title" style={{ fontSize: '3rem', margin: 0 }}>{report.verdict}</h2>
+                        <p className="verdict-tagline" style={{ color: vs.color, fontSize: '1.25rem', marginTop: '0.5rem' }}>{vs.tagline}</p>
+                    </div>
+                </div>
+                
+                {/* NEW GO/NO-GO VERDICT ROW */}
+                <div style={{ marginTop: '2rem', padding: '1rem 3rem', background: 'rgba(0,0,0,0.4)', borderRadius: '20px', border: `1px solid ${vs.color}`, display: 'inline-flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.2rem', color: 'white', fontWeight: 'bold' }}>FINAL DIRECTIVE:</span>
+                    <span style={{ fontSize: '1.5rem', color: vs.color, fontWeight: '900', letterSpacing: '2px' }}>{report.goNoGo || 'UNDECIDED'}</span>
                 </div>
             </div>
 
@@ -172,7 +180,11 @@ export default function ValidationReport({ report, onReset }) {
                 {/* Cell 3: Investor Lens */}
                 <div className="bento-cell glass-card neon-border-cyan" style={{ gridColumn: 'span 12' }}>
                     <h3><span className="icon">💰</span> Investor Lens</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+                        <div className="stat" style={{ textAlign: 'center' }}>
+                            <span className="stat-value" style={{ fontSize: '2rem', color: report.confidenceScore >= 80 ? '#10b981' : report.confidenceScore >= 60 ? '#f59e0b' : '#ef4444' }}>{report.confidenceScore || 0}%</span>
+                            <span className="stat-label">AI Confidence</span>
+                        </div>
                         <div className="stat" style={{ textAlign: 'center' }}>
                             <span className="stat-value" style={{ fontSize: '2rem', color: investorGrade === 'A' ? '#10b981' : investorGrade === 'B' ? '#3b82f6' : '#f59e0b' }}>{investorGrade}</span>
                             <span className="stat-label">Investment Grade</span>
@@ -225,15 +237,27 @@ export default function ValidationReport({ report, onReset }) {
                     </div>
                 )}
 
-                {/* Cell 6: Competition */}
+                {/* Cell 6: Competition & Weaknesses */}
                 {competitors.length > 0 && (
-                    <div className="bento-cell cell-competitors glass-card">
+                    <div className="bento-cell cell-competitors glass-card" style={{ gridColumn: 'span 12' }}>
                         <h3><span className="icon">🏢</span> Competitive Landscape ({competitors.length})</h3>
-                        <div className="competitors-list">
-                            {competitors.slice(0, 5).map((c, i) => <CompetitorCard key={i} competitor={c} />)}
+                        <div className="competitors-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                            {competitors.slice(0, 3).map((c, i) => <CompetitorCard key={i} competitor={c} />)}
                         </div>
+                        {report.competitorWeaknesses?.length > 0 && (
+                            <div className="bullet-list" style={{ marginTop: '2rem', background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '12px' }}>
+                                <h4 style={{ color: '#ec4899', display: 'flex', alignItems: 'center', gap: '8px' }}>⚔️ Competitor Weakness Insights</h4>
+                                <ul style={{ marginTop: '1rem' }}>{report.competitorWeaknesses.map((w, i) => <li key={i}>{w}</li>)}</ul>
+                            </div>
+                        )}
                     </div>
                 )}
+
+                {/* NEW Cell: Risk & Failure Prediction */}
+                <div className="bento-cell cell-failure glass-card" style={{ gridColumn: 'span 12', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                    <h3 style={{ color: '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}><span className="icon">⚠️</span> What will fail first?</h3>
+                    <p style={{ marginTop: '1rem', color: '#fca5a5', lineHeight: '1.6', fontSize: '1.1rem' }}>{report.failurePrediction || "If this startup fails, it will likely be due to a failure to achieve product-market fit or distribution. Analyze the risks closely."}</p>
+                </div>
 
                 {/* Cell 7: Action Plan */}
                 {report.nextSteps?.length > 0 && (
