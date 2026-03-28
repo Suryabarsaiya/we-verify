@@ -40,16 +40,25 @@ export default function ValidationReport({ report, onReset }) {
         setPdfGenerating(true);
         try {
             // 1. Save email as lead to Supabase
-            await fetch(`${API_BASE}/api/leads`, {
+            // 1. Save email as lead to Supabase
+            const leadRes = await fetch(`${API_BASE}/api/leads`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email,
-                    idea_title: report.ideaTitle || 'Validation Report',
+                    idea_title: report.ideaTitle || report.idea?.title || 'Validation Report',
                     verdict: report.verdict,
                     avg_score: avgScore
                 })
             });
+
+            if (!leadRes.ok) {
+                const errorData = await leadRes.json();
+                console.error("Supabase Lead Capture Failed:", errorData.error);
+                // We still proceed to generate the PDF so the user isn't stuck if DB fails.
+            } else {
+                 console.log("Lead captured successfully!");
+            }
 
             // 2. Generate PDF from report DOM
             const element = reportRef.current;
