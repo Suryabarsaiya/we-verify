@@ -5,34 +5,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-    /* ════ MODERN APPLE/STRIPE MONOCHROME THEME ════ */
-    --bg-void: #fafafa;
+    /* ════ MODERN LIGHT THEME (Soft Gradients) ════ */
+    --bg-void: #f8fafc; /* Very soft slate-white */
     --bg-surface: #ffffff;
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(0, 0, 0, 0.06);
-    --glass-border-hover: rgba(0, 0, 0, 0.12);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(99, 102, 241, 0.15); /* Soft Indigo border */
+    --glass-border-hover: rgba(99, 102, 241, 0.3);
 
-    --neon-cyan: #0066cc; /* Apple Blue */
-    --neon-purple: #6366f1; /* Stripe Indigo */
+    --neon-cyan: #3b82f6; /* Soft Blue */
+    --neon-purple: #8b5cf6; /* Soft Violet */
+    --neon-pink: #ec4899; /* Soft Pink */
     --neon-emerald: #10b981; 
     --neon-rose: #ef4444;
     --neon-amber: #f59e0b;
 
-    --text-primary: #111827; /* Near Black */
-    --text-secondary: #4b5563; /* Slate 600 */
-    --text-muted: #9ca3af;
+    --text-primary: #0f172a; /* Slate 900 */
+    --text-secondary: #475569; /* Slate 600 */
+    --text-muted: #94a3b8; /* Slate 400 */
 
-    --gradient-brand: linear-gradient(135deg, #111827 0%, #374151 100%);
-    --gradient-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.08), transparent 70%);
+    --gradient-brand: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 50%, var(--neon-pink) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15), transparent 70%);
+    --card-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.15); /* Colorful shadow drop */
 
-    --radius-xl: 24px;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
+    --radius-xl: 32px;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
 
-    --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-heading: 'Space Grotesk', -apple-system, sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, monospace;
 }
 
 * {
@@ -45,22 +47,17 @@ body {
     font-family: var(--font-body);
     background-color: var(--bg-void);
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        var(--gradient-glow);
-    background-size: 50px 50px, 50px 50px, 100% 100%;
-    background-position: center top;
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at bottom, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
+h1, h2, h3, h4, h5 {
     font-family: var(--font-heading);
+    letter-spacing: -0.03em;
 }
 
 /* ════ APP LAYOUT ════ */
@@ -134,18 +131,23 @@ h5 {
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
-    backdrop-filter: blur(20px);
-    transition: all 0.3s ease;
+    backdrop-filter: blur(24px);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
+    border-color: var(--glass-border-hover);
 }
 
 .neon-border:hover {
     border-color: var(--neon-purple);
-    box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);
 }
 
 .neon-border-cyan:hover {
     border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
 }
 
 /* ════ IDEA FORM ════ */
@@ -159,23 +161,24 @@ h5 {
 .idea-form textarea,
 .idea-form select {
     width: 100%;
-    padding: 0.875rem 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--glass-border);
+    padding: 1rem 1.25rem;
+    background: var(--bg-surface);
+    border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 1.05rem;
     transition: all 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .idea-form input:focus,
 .idea-form textarea:focus,
 .idea-form select:focus {
     outline: none;
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
-    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    background: #ffffff;
 }
 
 .idea-form label {
@@ -215,23 +218,22 @@ h5 {
 
 /* ════ LIVE TERMINAL STREAM (Agent Progress) ════ */
 .live-terminal {
-    background: #020617;
-    /* Even darker void */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    box-shadow: var(--card-shadow);
     overflow: hidden;
     max-width: 800px;
     margin: 0 auto;
 }
 
 .terminal-header {
-    background: #0f172a;
-    padding: 0.75rem 1rem;
+    background: #f1f5f9;
+    padding: 0.75rem 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .dot {
@@ -265,7 +267,7 @@ h5 {
     overflow-y: auto;
     font-family: var(--font-mono);
     font-size: 0.85rem;
-    color: #a5b4fc;
+    color: var(--text-secondary);
 }
 
 .terminal-window::-webkit-scrollbar {
@@ -319,7 +321,7 @@ h5 {
 }
 
 .term-detail {
-    color: #f8fafc;
+    color: var(--text-primary);
 }
 
 /* ════ BENTO BOX REPORT ════ */
@@ -344,10 +346,10 @@ h5 {
 
 .verdict-title {
     font-size: 3rem;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1;
-    letter-spacing: -0.02em;
-    color: white;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
 }
 
 .verdict-tagline {
@@ -375,10 +377,11 @@ h5 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--neon-cyan);
-    font-size: 1.2rem;
+    color: var(--neon-purple);
+    font-size: 1.25rem;
+    font-weight: 700;
     margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
     padding-bottom: 0.75rem;
 }
 

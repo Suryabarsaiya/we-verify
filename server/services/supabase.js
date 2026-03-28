@@ -92,10 +92,10 @@ async function saveLead({ email, idea_title, verdict, avg_score }) {
         const { data, error } = await supabase
             .from('leads')
             .insert([{
-                email,
-                idea_title: idea_title || '',
-                verdict: verdict || '',
-                avg_score: avg_score || 0,
+                email: String(email).trim(),
+                idea_title: String(idea_title || ''),
+                verdict: String(verdict || ''),
+                avg_score: parseInt(avg_score) || 0,
                 created_at: new Date().toISOString()
             }])
             .select();
