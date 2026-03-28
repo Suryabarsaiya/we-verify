@@ -14,9 +14,9 @@ export default function IdeaForm({ onSubmit, loading }) {
     return (
         <div className="idea-form modern-card glass-card">
             <div className="form-header modern-header">
-                <h2>Validate Your Startup Idea</h2>
+                <h2>Stop guessing. Start building.</h2>
                 <p>
-                    Describe your idea. Our AI agents will research the market, find competitors, and return a scored report.
+                    Your idea meets reality in under 60 seconds. Our parallel AI engine instantly maps your competitors, calculates your total addressable market, and grades your exact execution risk.
                 </p>
             </div>
 
@@ -91,7 +91,7 @@ export default function IdeaForm({ onSubmit, loading }) {
                 </div>
 
                 <button type="submit" className="btn-validate" disabled={loading || !title || !summary}>
-                    {loading ? 'Initializing Agents...' : '⚡ Validate My Idea'}
+                    {loading ? 'Initializing Agents...' : '⚡ Ignite Your Idea'}
                 </button>
             </form>
         </div>

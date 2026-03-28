@@ -19,7 +19,7 @@ export default function App() {
                     <h1>We Verify</h1>
                 </div>
                 {/* 🎯 UI/UX Update: Direct high-trust copywriting */}
-                <p className="tagline">Validate Your Startup Ideas with AI Before You Build.</p>
+                <p className="tagline">Don’t build blindly. Know your market before writing a single line of code.</p>
             </header>
 
             <main className="main-content modern-content">

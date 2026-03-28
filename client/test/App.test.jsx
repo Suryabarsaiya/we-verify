@@ -10,7 +10,7 @@ describe('App Component', () => {
         render(<App />);
         expect(screen.getAllByText(/We/i).length).toBeGreaterThan(0);
         expect(screen.getAllByText(/Verify/i).length).toBeGreaterThan(0);
-        expect(screen.getByText(/Validate Your Startup Ideas with AI Before You Build/i)).toBeInTheDocument();
+        expect(screen.getByText(/Don’t build blindly/i)).toBeInTheDocument();
     });
 
     it('renders the social footer layout', () => {
