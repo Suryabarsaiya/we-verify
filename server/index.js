@@ -19,7 +19,8 @@ app.use(express.json({ limit: '1mb' }));
 
 // ═══════ Rate Limiter (5 requests per minute per IP) ═══════
 const rateLimit = new Map();
-setInterval(() => { rateLimit.clear(); }, 300000); // Clean up every 5 min
+const rateLimitTimer = setInterval(() => { rateLimit.clear(); }, 300000); // Clean up every 5 min
+if (rateLimitTimer.unref) rateLimitTimer.unref(); // Prevent Jest open handle 
 app.use('/api/validate', (req, res, next) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
     const now = Date.now();
@@ -58,8 +59,8 @@ app.use((err, req, res, next) => {
 if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
         console.log(`\n✔  We Verify — Startup Validation Engine on port ${PORT}`);
-        console.log(`   OpenRouter LLM: ${process.env.OPENROUTER_API_KEY ? '✅ configured' : '❌ missing'}`);
-        console.log(`   Tavily Search:  ${process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing'}`);
+        console.log(`   NVIDIA Llama Model: ${process.env.NVIDIA_API_KEY ? '✅ configured' : '❌ missing'}`);
+        console.log(`   Tavily Search:      ${process.env.TAVILY_API_KEY ? '✅ configured' : '❌ missing'}`);
         console.log(`   Agents: Market · Competitor · Synthesizer\n`);
     });
 }
