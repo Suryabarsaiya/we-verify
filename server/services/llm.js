@@ -1,7 +1,7 @@
 /**
  * LLM Service — We Verify Startup Validation Engine
  *
- * Uses OpenRouter (OpenAI-compatible API) with llama3-70b-8192.
+ * Uses NVIDIA Build API (OpenAI-compatible) with LLaMA 3.1 70B.
  * 
  * Prompt functions:
  *   1. extractKeywords — pull keywords from idea
@@ -11,23 +11,23 @@
  */
 const axios = require('axios');
 
-const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 
 function getConfig() {
   return {
-    apiKey: process.env.OPENROUTER_API_KEY,
-    model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3-70b-instruct'
+    apiKey: process.env.NVIDIA_API_KEY,
+    model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-70b-instruct'
   };
 }
 
 // ═══════ Core LLM call with retry ═══════
 async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
   const { apiKey, model } = getConfig();
-  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set OPENROUTER_API_KEY in .env');
+  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set NVIDIA_API_KEY in .env');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const { data } = await axios.post(OPENROUTER_URL, {
+      const { data } = await axios.post(NVIDIA_API_URL, {
         model,
         messages: [{ role: 'user', content: prompt }],
         temperature,
@@ -35,9 +35,7 @@ async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
       }, {
         headers: {
           'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://we-verify.app',
-          'X-Title': 'We Verify'
+          'Content-Type': 'application/json'
         },
         timeout: 120000
       });

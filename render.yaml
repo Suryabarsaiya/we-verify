@@ -9,10 +9,10 @@ services:
     buildCommand: npm install
     startCommand: node server/index.js
     envVars:
-      - key: OPENROUTER_API_KEY
+      - key: NVIDIA_API_KEY
         sync: false
-      - key: OPENROUTER_MODEL
-        value: meta-llama/llama-3-70b-instruct:nitro
+      - key: NVIDIA_MODEL
+        value: meta/llama-3.1-70b-instruct
       - key: TAVILY_API_KEY
         sync: false
       - key: SUPABASE_URL
