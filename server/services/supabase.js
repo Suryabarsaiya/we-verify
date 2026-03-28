@@ -49,5 +49,52 @@ async function saveValidationRecord(idea, report, trace) {
         return null;
     }
 }
+async function saveLead({ email, idea_title, verdict, avg_score }) {
+    if (!supabase) return null;
 
-module.exports = { initSupabase, saveValidationRecord };
+    try {
+        const { data, error } = await supabase
+            .from('leads')
+            .insert([{
+                email,
+                idea_title: idea_title || '',
+                verdict: verdict || '',
+                avg_score: avg_score || 0,
+                created_at: new Date().toISOString()
+            }])
+            .select();
+
+        if (error) throw error;
+        console.log(`  📧 Lead saved: ${email}`);
+        return data?.[0]?.id;
+    } catch (err) {
+        console.error('Failed to save lead:', err.message);
+        return null;
+    }
+}
+
+async function dbCheck() {
+    if (!supabase) return { status: 'disconnected', message: 'Supabase not configured' };
+
+    try {
+        const { count: validationCount, error: e1 } = await supabase
+            .from('validations')
+            .select('*', { count: 'exact', head: true });
+
+        const { count: leadCount, error: e2 } = await supabase
+            .from('leads')
+            .select('*', { count: 'exact', head: true });
+
+        return {
+            status: 'connected',
+            tables: {
+                validations: { count: e1 ? `error: ${e1.message}` : validationCount },
+                leads: { count: e2 ? `error: ${e2.message}` : leadCount }
+            }
+        };
+    } catch (err) {
+        return { status: 'error', message: err.message };
+    }
+}
+
+module.exports = { initSupabase, saveValidationRecord, saveLead, dbCheck };

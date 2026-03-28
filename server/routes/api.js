@@ -76,5 +76,33 @@ module.exports = function () {
         }
     });
 
+    // ═══════ Save email lead (for PDF gating) ═══════
+    router.post('/leads', async (req, res) => {
+        try {
+            const { email, idea_title, verdict, avg_score } = req.body;
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({ error: 'Valid email is required' });
+            }
+
+            const { saveLead } = require('../services/supabase');
+            const id = await saveLead({ email, idea_title, verdict, avg_score });
+            res.json({ success: true, id });
+        } catch (err) {
+            console.error('Lead save error:', err.message);
+            res.status(500).json({ error: 'Failed to save lead' });
+        }
+    });
+
+    // ═══════ Database health check ═══════
+    router.get('/db-check', async (req, res) => {
+        try {
+            const { dbCheck } = require('../services/supabase');
+            const result = await dbCheck();
+            res.json(result);
+        } catch (err) {
+            res.status(500).json({ status: 'error', error: err.message });
+        }
+    });
+
     return router;
 };
