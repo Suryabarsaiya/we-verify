@@ -14,7 +14,7 @@ export default function About() {
             <div className="manifesto-section" style={{ background: '#0a0e1a', color: 'white', padding: '4rem 2rem', borderRadius: '16px', margin: '4rem 0', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', textAlign: 'center' }}>The Problem</h2>
                 <p style={{ fontSize: '1.25rem', lineHeight: '1.8', maxWidth: '800px', margin: '0 auto', textAlign: 'center', color: '#9ca3af' }}>
-                    90% of startups fail because they build products nobody actually needs. Founders spend 6 months coding in isolation, only to launch to crickets. We built an AI engine to fix that.
+                    90% of startups fail because they build products nobody actually needs. Founders spend months coding in isolation, only to launch to crickets. We built a Deep Research engine to fix that by generating institutional-grade due diligence mathematically.
                 </p>
             </div>
 
@@ -32,8 +32,8 @@ export default function About() {
                     <div className="feature-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '1rem', borderRadius: '12px', display: 'inline-block', marginBottom: '1.5rem' }}>
                         <Target size={32} />
                     </div>
-                    <h3>Unbiased AI</h3>
-                    <p>Your mom will tell you your idea is amazing. We Verify will show you the 3 ruthless competitors already doing it better.</p>
+                    <h3>Gemini Deep Research</h3>
+                    <p>Powered dynamically by Google Gemini 2.5. We scrape the web, read current market shifts, and identify ruthless competitor data in real-time.</p>
                 </div>
 
                 <div className="feature-card modern-card hover-lift">

@@ -14,8 +14,11 @@ export default function Home() {
             {/* HER0 & FORM BLOCK */}
             <div style={{ padding: '4rem 2rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '3rem', maxWidth: '800px', margin: '0 auto 3rem' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.1)', padding: '0.5rem 1rem', borderRadius: '20px', border: '1px solid rgba(56, 189, 248, 0.3)', marginBottom: '1.5rem', color: '#38bdf8', fontWeight: 'bold' }}>
+                        <span style={{ fontSize: '1.2rem' }}>✨</span> Powered by Institutional Deep Research (Gemini 2.5)
+                    </div>
                     <h1 className="hero-headline">Don’t build blindly. Verify first.</h1>
-                    <p className="hero-subtext">We Verify helps startups go from idea → validation → growth → funding. Know your real market before writing a single line of code.</p>
+                    <p className="hero-subtext">We Verify is a Deep Research engine that helps startups go from idea → validation → growth. Know your real market before writing a single line of code.</p>
                 </div>
 
                 {error && (

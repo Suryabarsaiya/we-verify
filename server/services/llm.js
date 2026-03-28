@@ -12,6 +12,14 @@
 const axios = require('axios');
 
 function getConfig() {
+  if (process.env.GEMINI_API_KEY) {
+    return {
+      apiKey: process.env.GEMINI_API_KEY,
+      apiUrl: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+      model: 'gemini-2.5-flash',
+      provider: 'Google Gemini'
+    };
+  }
   if (process.env.GROQ_API_KEY) {
     return {
       apiKey: process.env.GROQ_API_KEY,

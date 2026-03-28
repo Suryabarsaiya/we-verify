@@ -1,8 +1,34 @@
-import { useState } from 'react';
-import { ShieldAlert, CheckCircle, FileText, Rocket } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ShieldAlert, CheckCircle, FileText, Rocket, Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+
+// Keep styles out of the main block to avoid clutter
+const tabStyle = (isActive) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.75rem 1.5rem',
+    background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+    border: '1px solid',
+    borderColor: isActive ? 'var(--neon-cyan)' : 'transparent',
+    color: isActive ? 'white' : 'var(--text-muted)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    fontWeight: isActive ? 'bold' : 'normal',
+    whiteSpace: 'nowrap'
+});
 
 export default function AcceleratorDashboard({ data }) {
     const [activeTab, setActiveTab] = useState('risks');
+    
+    // PDF Generation State
+    const reportRef = useRef(null);
+    const [pdfGenerating, setPdfGenerating] = useState(false);
+    const [showEmailGate, setShowEmailGate] = useState(false);
+    const [email, setEmail] = useState('');
+    const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
     // Circular Progress Math
     const score = data.legalityScore || 0;
@@ -10,12 +36,59 @@ export default function AcceleratorDashboard({ data }) {
     const isMedRisk = score >= 50 && score < 80;
     const color = isHighRisk ? '#ef4444' : isMedRisk ? '#f59e0b' : '#10b981';
 
-    return (
-        <div className="accelerator-dashboard" style={{ marginTop: '2rem', textAlign: 'left', animation: 'fadeIn 0.5s ease' }}>
+    const handleDownloadRequest = () => {
+        setShowEmailGate(true);
+    };
+
+    const generatePDF = async () => {
+        if (!email) return;
+        setPdfGenerating(true);
+        setShowEmailGate(false);
+
+        try {
+            // 1. Silent Lead Capture
+            await fetch(`${API_BASE}/api/leads`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, idea_title: 'Accelerator Legal Pipeline', verdict: data.riskLevel, avg_score: score })
+            }).catch(e => console.error(e));
+
+            // 2. Generate PDF
+            const element = reportRef.current;
+            if (!element) return;
+
+            const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#0a0e1a', useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgHeight = (canvas.height * (pdfWidth - 20)) / canvas.width;
             
-            {/* Disclaimer */}
-            <div style={{ background: 'rgba(239,68,68,0.1)', color: '#fca5a5', padding: '0.75rem', borderRadius: '8px', textAlign: 'center', fontSize: '0.9rem', marginBottom: '2rem', border: '1px solid rgba(239,68,68,0.2)' }}>
-                ⚠️ <strong>Disclaimer:</strong> AI-generated insights, not formal legal advice. Always consult a certified Indian corporate attorney before incorporating.
+            pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, imgHeight);
+            pdf.save(`weverify_accelerator_report_${Date.now()}.pdf`);
+        } catch (err) {
+            console.error('PDF generation failed:', err);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            setPdfGenerating(false);
+        }
+    };
+
+    return (
+        <div ref={reportRef} className="accelerator-dashboard" style={{ marginTop: '2rem', textAlign: 'left', animation: 'fadeIn 0.5s ease' }}>
+            
+            {/* Disclaimer & Buttons */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ background: 'rgba(239,68,68,0.1)', color: '#fca5a5', padding: '0.75rem', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.2)' }}>
+                    ⚠️ <strong>Disclaimer:</strong> AI-generated insights, not formal advice. Consult a certified Indian corporate attorney.
+                </div>
+                
+                <button 
+                    onClick={handleDownloadRequest} 
+                    disabled={pdfGenerating}
+                    style={{ background: 'var(--neon-purple)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
+                    <Download size={18} /> {pdfGenerating ? 'Generating PDF...' : 'Download Full Report'}
+                </button>
             </div>
 
             {/* Hero Header */}
@@ -114,23 +187,35 @@ export default function AcceleratorDashboard({ data }) {
                 )}
             </div>
 
+            {/* Email Gate Modal */}
+            {showEmailGate && (
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                    <div className="modal-content glass-card" style={{ padding: '2.5rem', maxWidth: '400px', width: '90%', textAlign: 'center' }}>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--neon-cyan)' }}>Export Legal Blueprint</h3>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                            Enter your email to download your high-resolution compliance and accelerator report.
+                        </p>
+                        <input
+                            type="email"
+                            placeholder="founder@startup.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'white', marginBottom: '1.5rem' }}
+                            autoFocus
+                        />
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                            <button onClick={() => setShowEmailGate(false)} style={{ flex: 1, padding: '0.8rem', background: 'transparent', border: '1px solid var(--border-color)', color: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+                            <button 
+                                onClick={generatePDF} 
+                                disabled={!email || !email.includes('@')}
+                                style={{ flex: 1, padding: '0.8rem', background: 'var(--neon-cyan)', color: 'black', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: email && email.includes('@') ? 'pointer' : 'not-allowed', opacity: email && email.includes('@') ? 1 : 0.5 }}
+                            >
+                                Get PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
-
-// Inline styles for fast dashboard build
-const tabStyle = (isActive) => ({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    padding: '0.75rem 1.5rem',
-    background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
-    border: '1px solid',
-    borderColor: isActive ? 'var(--neon-cyan)' : 'transparent',
-    color: isActive ? 'white' : 'var(--text-muted)',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    fontWeight: isActive ? 'bold' : 'normal',
-    whiteSpace: 'nowrap'
-});

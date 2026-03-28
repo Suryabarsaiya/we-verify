@@ -8,11 +8,11 @@ async function analyzeLegalRisks(ideaStr) {
 Evaluate the legality of the following startup idea strictly within the context of Indian Law (IT Act 2000, RBI regulations, SEBI, DPDPA 2023, etc.).
 Idea: "${ideaStr}"
 
-You must output STRICT JSON with the following structure:
+You must output STRICT JSON. Provide deep research citations.
 {
   "legality_score": 85, 
   "risk_level": "Low" or "Medium" or "High",
-  "key_risks": ["Risk bullet 1", "Risk bullet 2"]
+  "key_risks": ["Risk bullet 1 with specific Act/Section cited", "Risk 2"]
 }`;
     
     // We expect a JSON object containing { legality_score, risk_level, key_risks }
@@ -27,11 +27,11 @@ async function adviseCompliance(ideaStr, riskData) {
 A founder has an idea: "${ideaStr}".
 The Legal AI assessed these risks: ${JSON.stringify(riskData.key_risks)}.
 
-Determine how to make this idea legally operational in India.
+Determine how to make this idea legally operational in India. Conduct deep research into exact licenses.
 Output STRICT JSON:
 {
-  "compliance_steps": ["Step 1 to mitigate", "Step 2"],
-  "required_documents": ["CIN Incorporation", "GST Registration", "Specific License"],
+  "compliance_steps": ["Step 1 referencing specific Indian legal clauses", "Step 2"],
+  "required_documents": ["CIN Incorporation (MCA)", "GST Registration", "Specific License (e.g., FSSAI, RBI NBFC)"],
   "regulatory_bodies": ["RBI", "SEBI", "MCA", "MeitY", etc.]
 }`;
     
@@ -45,12 +45,12 @@ async function findFunding(ideaStr) {
     const prompt = `You are an Indian Venture Capital Analyst and Startup India Expert.
 A founder has this idea: "${ideaStr}".
 
-Identify the precise Indian government schemes, grants, incubators, and private funding options available for this specific niche.
+Identify the precise Indian government schemes, grants, incubators, and private funding options available for this specific niche. Do deep research. Provide exact scheme names.
 Output STRICT JSON:
 {
-  "government_schemes": ["Startup India Seed Fund", "DPIIT Recognition", etc.],
-  "incubators": ["NASSCOM 10k Startups", "T-Hub", "Specific domain incubators"],
-  "funding_options": ["Angel Networks", "Specific VC Firms", "Grants"]
+  "government_schemes": ["Startup India Seed Fund (SISFS) up to ₹50 Lakhs", "DPIIT Recognition", etc.],
+  "incubators": ["T-Hub (Hyderabad)", "NASSCOM 10k Startups", "Specific domain incubators"],
+  "funding_options": ["Angel Networks (e.g. Indian Angel Network)", "Specific VC Firms", "Grants"]
 }`;
     
     return await llm.fetchJSON(prompt);
