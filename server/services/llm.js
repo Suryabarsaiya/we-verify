@@ -16,7 +16,7 @@ const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 function getConfig() {
   return {
     apiKey: process.env.NVIDIA_API_KEY,
-    model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-70b-instruct'
+    model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct'
   };
 }
 

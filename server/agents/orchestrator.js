@@ -72,8 +72,8 @@ async function validateIdea({ title, summary, targetMarket, businessModel }, onE
     let marketData, competitorData;
 
     const [marketResult, competitorResult] = await Promise.allSettled([
-        withTimeout(marketAgent.run(idea, keywords, pipe), 45000, 'MarketAgent'),
-        withTimeout(competitorAgent.run(idea, keywords, pipe), 45000, 'CompetitorAgent')
+        withTimeout(marketAgent.run(idea, keywords, pipe), 90000, 'MarketAgent'),
+        withTimeout(competitorAgent.run(idea, keywords, pipe), 90000, 'CompetitorAgent')
     ]);
 
     if (marketResult.status === 'fulfilled') {
