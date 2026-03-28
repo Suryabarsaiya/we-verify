@@ -103,6 +103,22 @@ export default function ValidationReport({ report, onReset }) {
         }
     }
 
+    async function handlePremiumCheckout() {
+        try {
+            const res = await fetch(`${API_BASE}/api/billing/checkout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idea_title: report.ideaTitle || 'Startup Idea', email: '' })
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+            }
+        } catch (err) {
+            console.error('Checkout failed:', err);
+        }
+    }
+
     return (
         <div ref={reportRef} className="report-bento">
             {/* Header / Verdict */}
@@ -232,11 +248,21 @@ export default function ValidationReport({ report, onReset }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="report-actions">
-                <button className="btn-pdf" onClick={() => setShowEmailGate(true)} disabled={pdfGenerating}>
-                    {pdfGenerating ? '⏳ Generating...' : '📥 Download PDF Report'}
+            <div className="report-actions" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
+                <button 
+                    onClick={handlePremiumCheckout} 
+                    style={{ padding: '1.25rem 2rem', background: 'var(--neon-purple)', color: 'white', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 15px rgba(99,102,241,0.3)', width: '100%', maxWidth: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
+                    onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                    onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                >
+                    💎 Unlock 15-Page Deep Dive ($4.99)
                 </button>
-                <button className="btn-reset" onClick={onReset}>← Run Another Validation</button>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button className="btn-pdf btn-reset" onClick={() => setShowEmailGate(true)} disabled={pdfGenerating}>
+                        {pdfGenerating ? '⏳ Generating...' : '📥 Download Free PDF'}
+                    </button>
+                    <button className="btn-reset" onClick={onReset}>← New Validation</button>
+                </div>
             </div>
 
             {/* Email Gate Modal */}

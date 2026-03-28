@@ -35,7 +35,12 @@ app.use('/api/validate', (req, res, next) => {
 });
 
 // Routes
+const apiRoutes = require('./routes/api');
+const billingRoutes = require('./routes/billing');
+
+// Routes
 app.use('/api', apiRoutes());
+app.use('/api/billing', billingRoutes());
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok', agents: 3, engine: 'We Verify' }));

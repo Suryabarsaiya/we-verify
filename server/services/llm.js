@@ -11,23 +11,31 @@
  */
 const axios = require('axios');
 
-const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-
 function getConfig() {
+  if (process.env.GROQ_API_KEY) {
+    return {
+      apiKey: process.env.GROQ_API_KEY,
+      apiUrl: 'https://api.groq.com/openai/v1/chat/completions',
+      model: 'llama-3.1-8b-instant',
+      provider: 'Groq LPU'
+    };
+  }
   return {
     apiKey: process.env.NVIDIA_API_KEY,
-    model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct'
+    apiUrl: 'https://integrate.api.nvidia.com/v1/chat/completions',
+    model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct',
+    provider: 'NVIDIA Build'
   };
 }
 
 // ═══════ Core LLM call with retry ═══════
 async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
-  const { apiKey, model } = getConfig();
-  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set NVIDIA_API_KEY in .env');
+  const { apiKey, apiUrl, model, provider } = getConfig();
+  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set GROQ_API_KEY or NVIDIA_API_KEY in .env');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const { data } = await axios.post(NVIDIA_API_URL, {
+      const { data } = await axios.post(apiUrl, {
         model,
         messages: [{ role: 'user', content: prompt }],
         temperature,

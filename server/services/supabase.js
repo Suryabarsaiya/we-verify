@@ -14,13 +14,49 @@ function initSupabase() {
     }
 }
 
+const crypto = require('crypto');
+
+function hashIdea({ title, summary }) {
+    if (!title && !summary) return null;
+    return crypto.createHash('sha256').update(`${title.trim().toLowerCase()}|${summary.trim().toLowerCase()}`).digest('hex');
+}
+
+async function checkCache(idea) {
+    if (!supabase) return null;
+    const idea_hash = hashIdea(idea);
+    if (!idea_hash) return null;
+
+    try {
+        // Query for exact match within last 7 days to ensure market research isn't stale
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const { data, error } = await supabase
+            .from('validations')
+            .select('full_report')
+            .eq('idea_hash', idea_hash)
+            .gte('created_at', sevenDaysAgo)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (!error && data && data.length > 0) {
+            console.log(`  🧠 Cache HIT for hash: ${idea_hash.substring(0, 8)}...`);
+            return data[0].full_report;
+        }
+        return null;
+    } catch (err) {
+        console.error('Cache check failed:', err.message);
+        return null;
+    }
+}
+
 async function saveValidationRecord(idea, report, trace) {
     if (!supabase) return null;
+    const idea_hash = hashIdea(idea);
 
     try {
         const { data, error } = await supabase
             .from('validations')
             .insert([{
+                idea_hash,
                 idea_title: idea.title,
                 idea_summary: idea.summary,
                 target_market: idea.targetMarket,
@@ -97,4 +133,4 @@ async function dbCheck() {
     }
 }
 
-module.exports = { initSupabase, saveValidationRecord, saveLead, dbCheck };
+module.exports = { initSupabase, saveValidationRecord, saveLead, dbCheck, checkCache };

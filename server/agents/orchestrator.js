@@ -45,8 +45,17 @@ async function validateIdea({ title, summary, targetMarket, businessModel }, onE
 
     const idea = { title, summary, targetMarket, businessModel };
 
-    // ── Step 1: Extract keywords ──
+    // ── Step 0: Advanced Semantic Caching ──
     pipe.log('Orchestrator', 'STARTED', `Validating: "${title}"`);
+    const cachedReport = await supabaseService.checkCache(idea);
+    if (cachedReport) {
+        pipe.log('Orchestrator', 'CACHE_HIT', 'Found identical fresh report in Supabase. Returning instantly.');
+        // Ensure UI updates properly
+        pipe.setState('Orchestrator', { status: 'complete' });
+        return cachedReport;
+    }
+
+    // ── Step 1: Extract keywords ──
     pipe.setState('Orchestrator', { status: 'extracting-keywords' });
 
     const keywords = await llm.extractKeywords(title, summary);
