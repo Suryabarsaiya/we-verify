@@ -16,7 +16,7 @@ You must output STRICT JSON. Provide deep research citations.
 }`;
     
     // We expect a JSON object containing { legality_score, risk_level, key_risks }
-    return await llm.fetchJSON(prompt);
+    return await llm.fetchJSON(prompt, { useGemini: true });
 }
 
 /**
@@ -35,7 +35,7 @@ Output STRICT JSON:
   "regulatory_bodies": ["RBI", "SEBI", "MCA", "MeitY", etc.]
 }`;
     
-    return await llm.fetchJSON(prompt);
+    return await llm.fetchJSON(prompt, { useGemini: true });
 }
 
 /**
@@ -53,7 +53,7 @@ Output STRICT JSON:
   "funding_options": ["Angel Networks (e.g. Indian Angel Network)", "Specific VC Firms", "Grants"]
 }`;
     
-    return await llm.fetchJSON(prompt);
+    return await llm.fetchJSON(prompt, { useGemini: true });
 }
 
 /**

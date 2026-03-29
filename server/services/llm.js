@@ -11,8 +11,8 @@
  */
 const axios = require('axios');
 
-function getConfig() {
-  if (process.env.GEMINI_API_KEY) {
+function getConfig(useGemini = false) {
+  if (useGemini && process.env.GEMINI_API_KEY) {
     return {
       apiKey: process.env.GEMINI_API_KEY,
       apiUrl: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
@@ -37,9 +37,9 @@ function getConfig() {
 }
 
 // ═══════ Core LLM call with retry ═══════
-async function callLLM(prompt, { retries = 2, temperature = 0.3 } = {}) {
-  const { apiKey, apiUrl, model, provider } = getConfig();
-  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set GROQ_API_KEY or NVIDIA_API_KEY in .env');
+async function callLLM(prompt, { retries = 2, temperature = 0.3, useGemini = false } = {}) {
+  const { apiKey, apiUrl, model, provider } = getConfig(useGemini);
+  if (!apiKey) throw new Error('LLM_NOT_CONFIGURED: Set required API key in .env');
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
@@ -268,8 +268,8 @@ Return ONLY valid JSON (no markdown, no explanation):
   };
 }
 
-async function fetchJSON(prompt) {
-  const result = await callLLM(prompt, { temperature: 0.2 });
+async function fetchJSON(prompt, config = {}) {
+  const result = await callLLM(prompt, { temperature: 0.2, ...config });
   return parseJSON(result) || {};
 }
 
