@@ -48,7 +48,7 @@ export default function Accelerator() {
                         onChange={(e) => setIdea(e.target.value)}
                         placeholder="e.g. A peer-to-peer crypto lending platform targeting college students in Bangalore..."
                         rows={4}
-                        style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: 'white', marginBottom: '1.5rem', fontFamily: 'inherit', fontSize: '1rem' }}
+                        style={{ width: '100%', padding: '1rem', borderRadius: '8px', background: 'var(--bg-surface)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', marginBottom: '1.5rem', fontFamily: 'inherit', fontSize: '1rem' }}
                         disabled={loading}
                         required
                     />

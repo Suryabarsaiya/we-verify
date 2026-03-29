@@ -7,9 +7,9 @@ export default function AgentProgress({ liveEvents }) {
         const agents = liveEvents.map(e => e.data?.agent).filter(Boolean);
         const actions = liveEvents.map(e => e.data?.action).filter(Boolean);
 
-        if (actions.includes('COMPLETE') && agents.includes('Synthesizer')) return 3; // Done
-        if (agents.includes('Synthesizer')) return 2; // Phase 3: Synthesizing
-        if (agents.includes('CompetitorAgent') || agents.includes('MarketAgent')) return 1; // Phase 2: Parallel Research
+        if (actions.includes('COMPLETE') && agents.includes('Critic')) return 3; // Done
+        if (agents.includes('Verifier') || agents.includes('Critic')) return 2; // Phase 3: Synthesizing
+        if (agents.includes('Executor') || agents.includes('Planner')) return 1; // Phase 2: Research & Execution
         return 0; // Phase 1: Booting
     }, [liveEvents]);
 
