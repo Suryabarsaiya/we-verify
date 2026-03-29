@@ -120,6 +120,27 @@ module.exports = function () {
         }
     });
 
+    // ═══════ Save Contact Form Message ═══════
+    router.post('/contact', async (req, res) => {
+        try {
+            const { name, email, message } = req.body;
+            if (!name || !email || !message) {
+                return res.status(400).json({ error: 'Name, email, and message are required fields' });
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({ error: 'Valid email is required' });
+            }
+
+            const { saveContactMessage } = require('../services/supabase');
+            const id = await saveContactMessage({ name, email, message });
+            
+            res.json({ success: true, id });
+        } catch (err) {
+            console.error('Contact form save error:', err.message);
+            res.status(500).json({ error: 'Failed to send message' });
+        }
+    });
+
     // ═══════ Database health check ═══════
     router.get('/db-check', async (req, res) => {
         try {

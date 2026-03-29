@@ -109,6 +109,29 @@ async function saveLead({ email, idea_title, verdict, avg_score }) {
     }
 }
 
+async function saveContactMessage({ name, email, message }) {
+    if (!supabase) return null;
+
+    try {
+        const { data, error } = await supabase
+            .from('contact_messages')
+            .insert([{
+                name: String(name).trim(),
+                email: String(email).trim(),
+                message: String(message).trim(),
+                created_at: new Date().toISOString()
+            }])
+            .select();
+
+        if (error) throw error;
+        console.log(`  📬 Contact message saved from: ${name}`);
+        return data?.[0]?.id;
+    } catch (err) {
+        console.error('Failed to save contact message:', err.message);
+        return null;
+    }
+}
+
 async function dbCheck() {
     if (!supabase) return { status: 'disconnected', message: 'Supabase not configured' };
 
@@ -133,4 +156,4 @@ async function dbCheck() {
     }
 }
 
-module.exports = { initSupabase, saveValidationRecord, saveLead, dbCheck, checkCache };
+module.exports = { initSupabase, saveValidationRecord, saveLead, saveContactMessage, dbCheck, checkCache };

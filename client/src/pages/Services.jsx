@@ -4,9 +4,11 @@ import { Scale, TrendingUp, DollarSign, Code, Magnet } from 'lucide-react';
 export default function Services() {
     return (
         <div className="page-container glass-card">
-            <div className="page-header services-header" style={{ marginBottom: '4rem' }}>
-                <h1 className="hero-headline">Real Execution Support.</h1>
-                <p className="hero-subtext">Validation is just step one. We Verify helps startups go from idea → validation → growth → funding.</p>
+            <div className="page-header services-header" style={{ marginBottom: '4rem', textAlign: 'center' }}>
+                <h1 className="hero-headline">Real Execution <span className="highlight-text" style={{ color: 'var(--neon-purple)' }}>Support</span>.</h1>
+                <p className="hero-subtext" style={{ maxWidth: '650px', margin: '0 auto' }}>
+                    Validation is just step one. We Verify helps founders go from raw idea validation to explosive growth and institutional funding.
+                </p>
             </div>
 
             <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', textAlign: 'left' }}>
@@ -53,9 +55,10 @@ export default function Services() {
 
             </div>
 
-            <div className="bottom-cta" style={{ textAlign: 'center', marginTop: '6rem', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>From idea to investor-ready — in one platform.</h2>
-                <Link to="/contact" className="btn-validate" style={{ textDecoration: 'none', display: 'inline-block' }}>Contact Sales →</Link>
+            <div className="bottom-cta modern-card" style={{ textAlign: 'center', marginTop: '6rem', padding: '4rem 2rem', background: 'var(--bg-surface)' }}>
+                <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Scale to investor-ready inside one unified platform.</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto 2.5rem auto' }}>Stop wasting capital on fractionals and expensive agencies. Get comprehensive architecture support today.</p>
+                <Link to="/contact" className="btn-validate" style={{ textDecoration: 'none', display: 'inline-block', padding: '1rem 3rem', fontSize: '1.1rem' }}>Get Execution Support →</Link>
             </div>
         </div>
     );
