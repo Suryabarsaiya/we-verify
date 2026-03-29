@@ -268,20 +268,9 @@ Return ONLY valid JSON (no markdown, no explanation):
   };
 }
 
-// ═══════ HIGH-LEVEL: Call LLM and parse JSON response ═══════
-// Used by indiaAcceleratorAgent.js and other agents that expect a JSON object
-async function fetchJSON(prompt, opts = {}) {
-  const raw = await callLLM(prompt, { temperature: 0.2, ...opts });
-  // Strip markdown bold/italic/code that LLMs often inject into JSON string values
-  const cleaned = raw
-    ? raw.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/`([^`]+)`/g, '$1')
-    : raw;
-  const parsed = parseJSON(cleaned);
-  if (!parsed) {
-    console.error('fetchJSON: Failed to parse LLM response as JSON. Cleaned sample:', cleaned?.substring(0, 300));
-    throw new Error('LLM_JSON_PARSE_FAILED: Response was not valid JSON');
-  }
-  return parsed;
+async function fetchJSON(prompt) {
+  const result = await callLLM(prompt, { temperature: 0.2 });
+  return parseJSON(result) || {};
 }
 
 module.exports = {

@@ -22,6 +22,13 @@ class AgentPipeline {
             if (this.onEvent) this.onEvent({ type: 'source', data: { url, type } });
         }
     }
+    getResult() {
+        return {
+            trace: this.trace,
+            agentStates: this.agentStates,
+            sources: this.sources
+        };
+    }
 }
 
 // Helper to fire Tavily
