@@ -9,7 +9,7 @@ export default function Accelerator() {
     const [error, setError] = useState(null);
     const [resultData, setResultData] = useState(null);
 
-    const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
+    const API_BASE = import.meta.env.VITE_API_URL || '';
 
     const handleAnalyze = async (e) => {
         e.preventDefault();
